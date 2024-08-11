@@ -1,6 +1,8 @@
 # Whaling Docker
 
-Plan overall but will change
+Plans overall but will change
+
+read the plans.md for more info
 
 
 - **Week 1:** Ensure Docker is pre-installed or provide installation instructions.
