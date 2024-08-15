@@ -1,4 +1,3 @@
-
 ### **Week 1: Docker Crash Course - Revised Plan (1 Hour)**
 
 #### **1. Introduction to Docker (15 minutes)**
@@ -25,9 +24,9 @@
 - **Objective:** Install Docker and ensure it’s working on participants’ machines.
 - **Content:**
     - **Ubuntu CLI Setup:**
-        - **Commands**:
+        - **Commands:**
 
-``` C++
+```C
 sudo apt update
 sudo apt install docker.io
 sudo systemctl start docker
@@ -68,311 +67,409 @@ sudo usermod -aG docker $USER
 - **Objective:** Address any questions and review key takeaways.
 - **Content:**
     - **Review Key Points:** Recap what Docker is, why it’s useful, and basic commands.
-    - **Que
-    - stions:** Open the floor for any questions or clarifications.
+    - **Questions:** Open the floor for any questions or clarifications.
     - **Next Steps:** Brief overview of what to expect in the following week.
 
 
-## **Week 2: Docker Basics and Creating Containers**
+### **Week 2: Creating Dockerfiles and Basic Images (1 Hour)**
 
-#### **1. Review of Docker Setup (10 minutes)**
+#### **1. Recap and Objectives (5 minutes)**
 
-- **Objective:** Ensure everyone is comfortable with Docker installation and basic commands.
+- **Objective:** Review Week 1’s content and introduce the concept of Dockerfiles.
 - **Content:**
-    - **Recap:** Quick review of Docker installation steps and basic commands (`docker --version`, `docker pull`, `docker run`, `docker ps`).
-    - **Troubleshooting:** Address any issues encountered during Week 1.
+    - **Recap:** Quick review of basic Docker commands and concepts.
+    - **Objective:** Learn to create Dockerfiles and build custom Docker images.
 
-#### **2. Understanding Docker Images and Containers (15 minutes)**
+#### **2. Introduction to Dockerfiles (15 minutes)**
 
-- **Objective:** Learn the differences between images and containers and how to manage them.
+- **Objective:** Understand the structure and purpose of a Dockerfile.
 - **Content:**
-    - **Docker Images:**
-        - Definition and how they are built.
-        - How to search for images on Docker Hub (`docker search [keyword]`).
-    - **Docker Containers:**
-        - Definition and lifecycle (created, running, stopped).
-        - How to inspect containers using `docker inspect`.
-    - **Managing Images and Containers:**
-        - **List Images:** `docker images`.
-        - **Remove Images:** `docker rmi [image_id]`.
-        - **List Containers:** `docker ps -a`.
-        - **Remove Containers:** `docker rm [container_id]`.
+    - **Dockerfile Basics:**
+        - **FROM:** Base image.
+        - **RUN:** Commands to run during the build.
+        - **COPY/ADD:** Adding files into the image.
+        - **CMD/ENTRYPOINT:** Default command to run.
+        - **EXPOSE:** Ports to be opened.
+    - **Example Dockerfile:**
 
-#### **3. Hands-On Activity: Running and Managing Containers (20 minutes)**
 
-- **Objective:** Practice running and managing Docker containers.
-- **Activity:**
-    - **Create and Run Containers:**
-        - **Run a Simple Web Server:** Use `docker run -d -p 8080:80 nginx` to start an Nginx web server.
-        - **Verify:** Open a web browser and go to `http://localhost:8080` to see the Nginx welcome page.
-    - **Managing Containers:**
-        - **List Running Containers:** `docker ps`.
-        - **Stop a Container:** `docker stop [container_id]`.
-        - **Remove a Container:** `docker rm [container_id]`.
-    - **Inspect Containers:**
-        - Use `docker inspect [container_id]` to view detailed container information.
-
-#### **4. Introduction to Dockerfile (10 minutes)**
-
-- **Objective:** Understand the basics of creating a Dockerfile to build custom Docker images.
-- **Content:**
-    - **What is a Dockerfile?**
-        - Definition and purpose.
-        - Basic Dockerfile structure (FROM, RUN, CMD, EXPOSE).
-    - **Simple Dockerfile Example:**
-        - Create a Dockerfile that builds a custom image (e.g., a simple Python app).
-        - Basic Dockerfile:
-
-```C++
+```C
+# Use an official Python runtime as a parent image
 FROM python:3.8-slim
-COPY app.py /app/
-WORKDIR /app
-RUN pip install flask
-CMD ["python", "app.py"]
 
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]
 ```
 
+#### **3. Hands-On Activity: Creating Your First Dockerfile (25 minutes)**
+
+- **Objective:** Create and build a custom Docker image.
+- **Activity:**
+    - **Task:**
+        - **Create a Simple Dockerfile:** Use the above example to create a Python web app.
+        - **Build the Image:** Run `docker build -t my-python-app .`.
+        - **Run the Container:** Execute `docker run -p 4000:80 my-python-app`.
+    - **Discussion:** Analyze the Dockerfile and the resulting image.
+
+#### **4. Pushing Images to Docker Hub (10 minutes)**
+
+- **Objective:** Learn how to share images via Docker Hub.
+- **Content:**
+    - **Commands:**
+        - **Tag Image:** `docker tag my-python-app username/my-python-app`.
+        - **Push Image:** `docker push username/my-python-app`.
+    - **Verification:** Confirm that the image is available on Docker Hub.
 
 #### **5. Q&A and Wrap-Up (5 minutes)**
 
-- **Objective:** Address questions and summarize the key points of the session.
+- **Objective:** Address any questions and review key takeaways.
 - **Content:**
-    - **Review Key Points:** Recap managing images and containers, and introduce Dockerfile basics.
+    - **Review Key Points:** Recap the process of creating and pushing Docker images.
     - **Questions:** Open the floor for any questions or clarifications.
-    - **Next Steps:** Brief overview of what to expect in Week 3.
-
-### **Preparation Checklist**
-
-- **Materials:**
-    - Presentation slides on Docker images, containers, and Dockerfile basics.
-    - Example Dockerfile and sample code for the hands-on activity.
-- **Setup:**
-    - Ensure all participants can access Docker Hub and run Docker commands.
-    - Prepare a demo environment to illustrate creating and running containers.
+    - **Next Steps:** Preview Week 3’s focus on creating and testing containers.
 
 
-## **Week 4: Docker Networking and Orchestration**
+### **Week 3: Creating and Testing Containers (1 Hour)**
 
-#### **1. Introduction to Docker Networking (15 minutes)**
+#### **1. Recap and Objectives (5 minutes)**
 
-- **Objective:** Understand how Docker manages networking and how to configure networks for containers.
+- **Objective:** Review Week 2’s content and introduce the concept of container testing.
 - **Content:**
-    - **Docker Networking Basics:**
-        - **Network Types:** Overview of bridge, host, overlay, and macvlan networks.
-        - **Network Drivers:** How Docker uses different network drivers.
-    - **Creating and Using Docker Networks:**
-        - **Create a Network:** `docker network create [network_name]`.
-        - **List Networks:** `docker network ls`.
-        - **Inspect a Network:** `docker network inspect [network_name]`.
-        - **Connect Containers to Networks:** Use the `--network` option with `docker run`.
+    - **Recap:** Quick review of Dockerfiles and custom images.
+    - **Objective:** Learn to create containers from custom images and test them.
 
-#### **2. Hands-On Activity: Configuring Docker Networks (20 minutes)**
+#### **2. Creating and Running Containers (15 minutes)**
 
-- **Objective:** Practice setting up and configuring Docker networks for container communication.
+- **Objective:** Understand how to run containers from custom images.
+- **Content:**
+    - **Commands:**
+        - **Run a Container:** `docker run -d -p 8080:80 my-python-app`.
+        - **Inspect a Container:** `docker inspect container_id`.
+        - **Stop and Remove Containers:** `docker stop container_id` and `docker rm container_id`.
+    - **Discussion:** Differences between running and stopped containers.
+
+#### **3. Hands-On Activity: Container Testing (25 minutes)**
+
+- **Objective:** Test the functionality and performance of containers.
 - **Activity:**
-    - **Create a Network:**
-        - Command: `docker network create my-network`.
-    - **Run Containers on the Network:**
-        - Start two containers on the same network using `--network my-network` (e.g., `docker run -d --name container1 --network my-network nginx` and `docker run -d --name container2 --network my-network alpine`).
-    - **Test Communication:**
-        - Use `docker exec` to access one container and `ping` the other container by name (e.g., `docker exec -it container1 ping container2`).
+    - **Task:**
+        - **Run Multiple Containers:** Deploy multiple instances of `my-python-app`.
+        - **Test Connectivity:** Use `curl` or a browser to access the running containers.
+        - **Load Testing:** Introduce basic load testing using tools like `ab` (ApacheBench).
+    - **Discussion:** Analyze the performance and resource usage.
+
+#### **4. Debugging Containers (10 minutes)**
+
+- **Objective:** Learn basic debugging techniques for containers.
+- **Content:**
+    - **Commands:**
+        - **View Logs:** `docker logs container_id`.
+        - **Attach to a Running Container:** `docker exec -it container_id bash`.
+        - **Inspect Issues:** Use logs and attached sessions to troubleshoot issues.
+    - **Discussion:** Common issues and how to resolve them.
+
+#### **5. Q&A and Wrap-Up (5 minutes)**
+
+- **Objective:** Address any questions and review key takeaways.
+- **Content:**
+    - **Review Key Points:** Recap container creation, testing, and debugging.
+    - **Questions:** Open the floor for any questions or clarifications.
+    - **Next Steps:** Introduce Week 4’s focus on networking and Docker Compose.
+
+---
+
+### **Week 4: Docker Networking and Docker Compose (1 Hour)**
+
+#### **1. Recap and Objectives (5 minutes)**
+
+- **Objective:** Review Week 3’s content and introduce Docker networking and Compose.
+- **Content:**
+    - **Recap:** Quick review of container creation and testing.
+    - **Objective:** Learn to manage container networking and orchestrate multi-container applications.
+
+#### **2. Introduction to Docker Networking (15 minutes)**
+
+- **Objective:** Understand Docker’s networking capabilities.
+- **Content:**
+    - **Network Types:**
+        - **Bridge:** Default network for containers on a single host.
+        - **Host:** Container shares the host’s network stack.
+        - **Overlay:** Multi-host networking using a cluster of Docker engines.
+    - **Commands:**
+        - **List Networks:** `docker network ls`.
+        - **Inspect Network:** `docker network inspect bridge`.
+        - **Create Network:** `docker network create my-network`.
+    - **Discussion:** How and when to use different network types.
 
 #### **3. Introduction to Docker Compose (15 minutes)**
 
-- **Objective:** Learn how to use Docker Compose for managing multi-container applications.
+- **Objective:** Understand Docker Compose and its role in managing multi-container applications.
 - **Content:**
     - **What is Docker Compose?**
-        - Definition and benefits for defining and running multi-container Docker applications.
-    - **Basic Concepts:**
-        - **docker-compose.yml:** The configuration file for Docker Compose.
-        - **Key Components:** Services, networks, and volumes.
-    - **Simple Example:**
-        - Example `docker-compose.yml` file:
-```C++
+        - Tool for defining and running multi-container Docker applications.
+    - **Compose Basics:**
+        - **docker-compose.yml:** YAML file that defines services, networks, and volumes.
+        - **Commands:**
+            - **Start Services:** `docker-compose up`.
+            - **Stop Services:** `docker-compose down`.
+    - **Example docker-compose.yml:**
+```C
 version: '3'
 services:
   web:
-    build:
-      context: ./web
+    image: my-python-app
     ports:
       - "8080:80"
-  backend:
-    build:
-      context: ./backend
-    depends_on:
-      - db
   db:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: mydb
+
 ```
 
+#### **4. Hands-On Activity: Multi-Container Setup with Compose (20 minutes)**
 
-- **Explanation of Configuration:**
-            - **Build Context:** Specify where Docker should look for Dockerfiles.
-            - **Ports:** Map container ports to host ports.
-            - **Depends On:** Define dependencies between services.
-
-#### **4. Hands-On Activity: Build and Run the Project (15 minutes)**
-
-- **Objective:** Build and deploy the Dockerized web application using Docker Compose.
+- **Objective:** Build and run a multi-container application using Docker Compose.
 - **Activity:**
-    - **Build and Run:**
-        - **Navigate to Project Directory:** `cd web-app`.
-        - **Build and Start Services:** `docker-compose up --build`.
-        - **Verify:** Check if services are running (`docker-compose ps`).
-    - **Testing:**
-        - **Access the Web Application:** Open a browser and go to `http://localhost:8080` to see the web server.
-        - **Check Backend Service:** Ensure the backend service is working and connected to the database.
+    - **Task:**
+        - **Create a Compose File:** Use the example to define a web and database service.
+        - **Deploy the Application:** Run `docker-compose up` and verify both containers are running.
+        - **Test Networking:** Ensure the web service can communicate with the database.
+    - **Discussion:** Analyze the output and networking between containers.
 
-#### **5. Troubleshooting and Optimization (5 minutes)**
+#### **5. Q&A and Wrap-Up (5 minutes)**
 
-- **Objective:** Address any issues and discuss optimization strategies.
+- **Objective:** Address any questions and review key takeaways.
 - **Content:**
-    - **Common Issues:**
-        - Troubleshoot common problems (e.g., connection issues, build errors).
-    - **Optimization Tips:**
-        - Use smaller base images.
-        - Minimize the number of layers in Dockerfiles.
+    - **Review Key Points:** Recap Docker networking and Compose.
+    - **Questions:** Open the floor for any questions or clarifications.
+    - **Next Steps:** Introduce Week 5’s focus on securing Docker images and containers.
 
-#### **6. Q&A and Wrap-Up (5 minutes)**
+### **Week 5: Securing Docker Images and Containers (1 Hour)**
 
-- **Objective:** Summarize the project and address final questions.
+#### **1. Recap and Objectives (5 minutes)**
+
+- **Objective:** Review Week 4’s content and introduce Docker security best practices.
 - **Content:**
-    - **Review Key Points:** Recap the project components, Docker Compose configuration, and deployment process.
-    - **Questions:** Open the floor for any final questions or clarifications.
+    - **Recap:** Quick review of Docker networking and Compose.
+    - **Objective:** Learn to secure Docker images and containers.
 
+#### **2. Docker Security Fundamentals (15 minutes)**
 
-
-### **Week 6: Practical Project - Incident Management Dashboard**
-
-#### **1. Introduction to the Project (10 minutes)**
-
-- **Objective:** Introduce the final project and its relevance to cybersecurity.
+- **Objective:** Understand the basics of securing Docker environments.
 - **Content:**
-    - **Project Description:**
-        - Build an incident management dashboard web app.
-        - **Components:** Dashboard to display incidents, manage incident status, and visualize basic metrics.
-    - **Cybersecurity Theme:**
-        - **Incident Management:** Mimics real-world tools used for managing and tracking cybersecurity incidents.
-        - **Learning Outcomes:** Understanding web app basics, Dockerizing the app, and handling data with Flask.
+    - **Security Practices:**
+        - **Minimize Image Size:** Use minimal base images.
+        - **User Permissions:** Run containers as non-root users.
+        - **Secrets Management:** Securely handle sensitive data.
+        - **Regular Updates:** Keep images and containers up to date.
+    - **Security Tools:**
+        - **Docker Bench for Security:** Automate security checks.
+        - **Clair:** Vulnerability scanning tool for Docker images.
+    - **Commands:**
+        - **Scan for Vulnerabilities:** `docker scan my-python-app`.
 
-#### **2. Project Setup and Configuration (15 minutes)**
+#### **3. Hands-On Activity: Securing a Container (25 minutes)**
 
-- **Objective:** Set up the project environment and create initial files.
-- **Content:**
-    - **Directory Structure:**
-        - Create a project directory (e.g., `incident-dashboard/`).
-        - Subdirectories: `templates/`, `static/` (for HTML, CSS).
-    - **Basic Files:**
-        - **HTML Template (index.html):**
-```HTML
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Incident Management Dashboard</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-  <h1>Incident Management Dashboard</h1>
-  <div id="incidents">
-    <!-- Incident data will be injected here -->
-  </div>
-</body>
-</html>
-
-```
-
-- **CSS (style.css):**
-```CSS
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-}
-h1 {
-  color: #333;
-}
-#incidents {
-  margin-top: 20px;
-}
-```
-
-#### **3. Developing the Flask Application (15 minutes)**
-
-- **Objective:** Set up a basic Flask app to serve the HTML page and handle data.
-- **Content:**
-    - **Flask Setup:**
-        - **app.py:**
-
-```Python
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    # Example incident data
-    incidents = [
-        {'id': 1, 'title': 'Phishing Attack', 'status': 'Open'},
-        {'id': 2, 'title': 'Malware Incident', 'status': 'Resolved'}
-    ]
-    return render_template('index.html', incidents=incidents)
-
-if __name__ == '__main__':
-    app.run(debug=True)
-```
- -  **Explanation:**
-    - Serving the `index.html` template.
-    - Injecting sample incident data into the template.
-
-#### **4. Dockerizing the Web App (10 minutes)**
-
-- **Objective:** Create Docker configuration for the Flask app.
-- **Content:**
-    - **Dockerfile:**
-
-```C++
-FROM python:3.8-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["flask", "run", "--host=0.0.0.0"]
-```
-
-- Requiremennts.txt
-```C++
-Flask==2.1.1
-```
-
-
-**docker-compose.yml:**
-
-```C++
-version: '3'
-services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-```
-
-#### **5. Hands-On Activity: Building and Running the Project (10 minutes)**
-
-- **Objective:** Build and deploy the incident management dashboard using Docker.
+- **Objective:** Apply security best practices to an existing Docker container.
 - **Activity:**
-    - **Run Docker Compose:**
-        - **Navigate to Project Directory:** `cd incident-dashboard`.
-        - **Build and Start Services:** `docker-compose up --build`.
-        - **Verify:** Open a browser and go to `http://localhost:5000` to view the dashboard.
+    - **Task:**
+        - **Minimize Image:** Refactor Dockerfile to use a smaller base image.
+        - **Run as Non-Root:** Update Dockerfile to use a non-root user.
+        - **Scan for Vulnerabilities:** Use `docker scan` or Clair to identify issues.
+    - **Discussion:** Analyze the security posture of the updated container.
 
-#### **6. Q&A and Wrap-Up (10 minutes)**
+#### **4. Implementing Network Policies (10 minutes)**
 
-- **Objective:** Address questions and review the project.
+- **Objective:** Learn to enforce security policies on Docker networks.
 - **Content:**
-    - **Review Key Points:** Recap the project setup, Dockerization, and deployment process.
-    - **Questions:** Open the floor for any final questions or clarifications.
-    - **Feedback:** Gather feedback on the workshop and discuss any future learning opportunities.
+    - **Network Segmentation:** Isolate containers with different security levels.
+    - **Firewalls:** Configure iptables or Docker’s built-in firewall to restrict access.
+    - **Commands:**
+        - **Create Isolated Network:** `docker network create --internal my-secure-network`.
+        - **Assign Containers:** Deploy containers to the isolated network.
+    - **Discussion:** The importance of network segmentation in securing Docker environments.
+
+#### **5. Q&A and Wrap-Up (5 minutes)**
+
+- **Objective:** Address any questions and review key takeaways.
+- **Content:**
+    - **Review Key Points:** Recap Docker security practices.
+    - **Questions:** Open the floor for any questions or clarifications.
+    - **Next Steps:** Introduce Week 6’s focus on Kubernetes basics and environment setup.
+
+
+
+
+### **Week 6: Introduction to Kubernetes and Environment Setup (1 Hour)**
+
+#### **1. Recap and Objectives (5 minutes)**
+
+- **Objective:** Review Week 5’s content and introduce Kubernetes.
+- **Content:**
+    - **Recap:** Quick review of Docker security best practices.
+    - **Objective:** Understand Kubernetes basics and prepare the environment.
+
+#### **2. Introduction to Kubernetes (15 minutes)**
+
+- **Objective:** Understand what Kubernetes is and its role in container orchestration.
+- **Content:**
+    - **What is Kubernetes?**
+        - Open-source platform for automating deployment, scaling, and management of containerized applications.
+    - **Core Concepts:**
+        - **Pods:** The smallest deployable units in Kubernetes.
+        - **Services:** Expose and load-balance containers to the outside world.
+        - **Deployments:** Manage the deployment of Pods.
+        - **Namespaces:** Virtual clusters within a Kubernetes cluster.
+    - **Comparison with Docker:** How Kubernetes builds on Docker’s capabilities.
+
+#### **3. Kubernetes Environment Setup (20 minutes)**
+
+- **Objective:** Set up a local Kubernetes environment.
+- **Content:**
+    - **Minikube Setup:**
+        - Install Minikube (lightweight Kubernetes implementation).
+        - **Commands:**
+
+```C
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube start
+```
+
+#### **4. Hands-On Activity: Deploying a Simple App on Kubernetes (15 minutes)**
+
+- **Objective:** Deploy a simple application on Kubernetes.
+- **Activity:**
+    - **Task:**
+        - **Create a Pod:** Use `kubectl run my-python-app --image=my-python-app --port=80`.
+        - **Expose the Pod:** Run `kubectl expose pod my-python-app --type=NodePort`.
+        - **Access the App:** Use Minikube IP and NodePort to access the running app.
+    - **Discussion:** The differences between Docker and Kubernetes deployments.
+
+#### **5. Q&A and Wrap-Up (5 minutes)**
+
+- **Objective:** Address any questions and review key takeaways.
+- **Content:**
+    - **Review Key Points:** Recap Kubernetes basics and environment setup.
+    - **Questions:** Open the floor for any questions or clarifications.
+    - **Next Steps:** Introduce Week 7’s focus on deploying a container with Kubernetes.
+
+---
+
+### **Week 7: Deploying and Managing Containers with Kubernetes (1 Hour)**
+
+#### **1. Recap and Objectives (5 minutes)**
+
+- **Objective:** Review Week 6’s content and focus on container deployment with Kubernetes.
+- **Content:**
+    - **Recap:** Quick review of Kubernetes basics.
+    - **Objective:** Deploy and manage a container using Kubernetes.
+
+#### **2. Kubernetes Deployments and Services (15 minutes)**
+
+- **Objective:** Understand how to deploy and manage containers in Kubernetes.
+- **Content:**
+    - **Deployments:**
+        - Define and manage Pod deployment with `Deployment` objects.
+        - **Commands:** `kubectl create deployment my-deployment --image=my-python-app`.
+    - **Services:**
+        - Expose Pods using `Service` objects for network access.
+        - **Commands:** `kubectl expose deployment my-deployment --type=LoadBalancer --port=8080`.
+    - **Scaling:**
+        - Scale the number of Pods based on load.
+        - **Commands:** `kubectl scale deployment my-deployment --replicas=3`.
+    - **Discussion:** How deployments and services work together in Kubernetes.
+
+#### **3. Hands-On Activity: Scaling and Managing Containers (20 minutes)**
+
+- **Objective:** Deploy, scale, and manage a containerized application.
+- **Activity:**
+    - **Task:**
+        - **Deploy an Application:** Use the `my-python-app` image.
+        - **Expose the Application:** Create a service to access the app externally.
+        - **Scale the Deployment:** Adjust the replica count to handle increased load.
+    - **Discussion:** Analyze the application’s performance after scaling.
+
+#### **4. Implementing Health Checks and Autoscaling (10 minutes)**
+
+- **Objective:** Ensure containers are healthy and scale automatically.
+- **Content:**
+    - **Health Checks:**
+        - Configure liveness and readiness probes.
+        - **Commands:**
+            - Add health checks in the `Deployment` YAML.
+    - **Autoscaling:**
+        - Automatically scale based on CPU usage.
+        - **Commands:** `kubectl autoscale deployment my-deployment --min=2 --max=5 --cpu-percent=80`.
+    - **Discussion:** Importance of health checks and autoscaling for robust applications.
+
+#### **5. Q&A and Wrap-Up (5 minutes)**
+
+- **Objective:** Address any questions and review key takeaways.
+- **Content:**
+    - **Review Key Points:** Recap Kubernetes deployments and scaling.
+    - **Questions:** Open the floor for any questions or clarifications.
+    - **Next Steps:** Introduce Week 8’s focus on integrating all containers with Kubernetes.
+
+
+
+### **Week 8: Integrating and Orchestrating All Containers with Kubernetes (1 Hour)**
+
+#### **1. Recap and Objectives (5 minutes)**
+
+- **Objective:** Review Week 7’s content and focus on integrating and orchestrating all containers.
+- **Content:**
+    - **Recap:** Quick review of Kubernetes container management.
+    - **Objective:** Integrate and orchestrate all three containers created throughout the workshop.
+
+#### **2. Overview of Project Containers (10 minutes)**
+
+- **Objective:** Recap the three containers developed during the workshop.
+- **Content:**
+    - **Honeypot Container:** Review its purpose and setup.
+    - **Security Testing Lab Container:** Recap its function and components.
+    - **Incident Response Container:** Revisit its design and tools.
+    - **Discussion:** How these containers can be integrated and used together.
+
+#### **3. Hands-On Activity: Kubernetes Orchestration (35 minutes)**
+
+- **Objective:** Integrate and orchestrate all containers with Kubernetes.
+- **Activity:**
+    - **Task:**
+        - **Deploy All Containers:** Use Kubernetes to deploy the Honeypot, Security Testing Lab, and Incident Response containers.
+        - **Set Up Networking:** Ensure the containers can communicate as needed, but maintain isolation where necessary.
+        - **Selective Activation:** Implement selective container activation based on the needs (e.g., only run the Honeypot or Incident Response containers).
+        - **Monitor and Test:** Ensure everything is running correctly and test the setup with simulated attacks or scenarios.
+    - **Discussion:** Analyze the integration and any potential vulnerabilities or performance issues.
+
+#### **4. Final Review and Next Steps (10 minutes)**
+
+- **Objective:** Wrap up the workshop and discuss future projects or learning paths.
+- **Content:**
+    - **Review Key Points:** Recap the entire workshop from Docker basics to Kubernetes orchestration.
+    - **Next Steps:** Encourage students to explore advanced Kubernetes topics, security best practices, and contribute to the final project.
+    - **Questions:** Open the floor for final questions or clarifications.
+
+#### **5. Conclusion and Feedback (5 minutes)**
+
+- **Objective:** Conclude the workshop and gather feedback.
+- **Content:**
+    - **Thank Students:** Acknowledge their hard work and participation.
+    - **Collect Feedback:** Request feedback on the workshop content and structure.
+    - **Future Opportunities:** Discuss potential follow-up workshops or collaborative projects.
