@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  web:
+    image: nginx:latest
+    container_name: nginx_container
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web:/usr/share/nginx/html
+    networks:
+      - frontend
+    depends_on:
+      - app
+    environment:
+      - NGINX_HOST=web.local
+      - NGINX_PORT=80
+
+  app:
+    image: myapp:latest
+    container_name: app_container
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/usr/src/app
+      - app_logs:/var/log/app
+    networks:
+      - backend
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=postgres://user:password@db:5432/mydatabase
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: db_container
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mydatabase
+
+  cache:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  worker:
+    image: myworker:latest
+    container_name: worker_container
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - app
+      - cache
+    environment:
+      - REDIS_URL=redis://cache:6379
+      - DATABASE_URL=postgres://user:password@db:5432/mydatabase
+
+  proxy:
+    image: traefik:v2.2
+    container_name: traefik_container
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - web
+
+volumes:
+  db_data:
+  app_logs:
+
+networks:
+  frontend:
+  backend:
